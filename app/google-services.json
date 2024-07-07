@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "983256796538",
+    "firebase_url": "https://madprojectml-default-rtdb.firebaseio.com",
+    "project_id": "madprojectml",
+    "storage_bucket": "madprojectml.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983256796538:android:a386f7579ded1f6feb5ac3",
+        "android_client_info": {
+          "package_name": "com.example.madprojectml"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXUD1CAxGZYWreZudLxFhPzJ_WUpAMcjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
