@@ -38,7 +38,7 @@ public class ImageSelectionActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_image_selection);
 
-        imageViewSelected = findViewById(R.id.imageViewSelected);
+        imageViewSelected = findViewById(R.id.ivInput);
 
         Intent intent = getIntent();
         moduleType = intent.getStringExtra("MODULE_TYPE");

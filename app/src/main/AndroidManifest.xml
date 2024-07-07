@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission
+        android:name="android.permission.CAMERA"
+        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -18,9 +25,21 @@
         android:theme="@style/Theme.MADProjectML"
         tools:targetApi="31">
         <activity
-            android:name="ImageSelectionActivity"
+            android:name=".Ads"
             android:exported="false" />
-
+        <activity
+            android:name=".modules.linkerRealTimeObjectDetection"
+            android:exported="false" />
+        <activity
+            android:name=".mlmodels.RealTimeObjectDetection"
+            android:exported="false" />
+        <activity android:name=".mlmodels.ImageHelperActivity" />
+        <activity android:name=".mlmodels.ImageClassificationModel" />
+        <activity android:name=".mlmodels.FlowerClassificationModel" />
+        <activity android:name=".mlmodels.FaceDetectionModel" />
+        <activity android:name=".mlmodels.ObjectDetectionModel" /> <!-- <activity -->
+        <!-- android:name=".ImageSelectionActivity" -->
+        <!-- android:exported="false" /> -->
         <activity
             android:name=".modules.ImageClassificationActivity"
             android:exported="false" />
@@ -48,6 +67,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
+
     </application>
 
 </manifest>

@@ -12,13 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.madprojectml.Adapters.ImageAdapter;
 import com.example.madprojectml.ImageSelectionActivity;
 import com.example.madprojectml.R;
+import com.example.madprojectml.mlmodels.ImageClassificationModel;
 import com.example.madprojectml.models.ImageData;
+import com.example.madprojectml.models.ImageUpload;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.mlkit.vision.label.ImageLabeler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,8 @@ public class ImageClassificationActivity extends AppCompatActivity {
     private List<ImageData> imageDataList;
     private ImageAdapter imageAdapter;
     private FloatingActionButton fabAddImage;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +49,11 @@ public class ImageClassificationActivity extends AppCompatActivity {
 
         initializeRecyclerView();
         loadImagesFromFirebase();
+
     }
 
     private void openImageSelectionForm() {
-        Intent intent = new Intent(this, ImageSelectionActivity.class);
+        Intent intent = new Intent(this, ImageClassificationModel.class);
         intent.putExtra("MODULE_TYPE", "ImageClassification");
         startActivity(intent);
     }
@@ -58,8 +64,12 @@ public class ImageClassificationActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 imageDataList.clear();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    String imageUrl = postSnapshot.getValue(String.class);
-                    imageDataList.add(new ImageData(imageUrl, "90%")); // Adjust accuracy as needed
+                    ImageUpload imageUpload = postSnapshot.getValue(ImageUpload.class);
+                    if (imageUpload != null) {
+                        String imageUrl = imageUpload.getImageUrl();
+                        String result = imageUpload.getResult();
+                        imageDataList.add(new ImageData(imageUrl, result));
+                    }
                 }
                 imageAdapter.notifyDataSetChanged();
             }
@@ -70,6 +80,7 @@ public class ImageClassificationActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void initializeRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerViewImages);
