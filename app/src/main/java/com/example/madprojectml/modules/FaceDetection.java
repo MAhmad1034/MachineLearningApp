@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.madprojectml.Adapters.ImageAdapter;
 import com.example.madprojectml.ImageSelectionActivity;
 import com.example.madprojectml.R;
+import com.example.madprojectml.mlmodels.FaceDetectionModel;
 import com.example.madprojectml.models.ImageData;
+import com.example.madprojectml.models.ImageUpload;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,19 +49,22 @@ public class FaceDetection extends AppCompatActivity {
     }
 
     private void openImageSelectionForm() {
-        Intent intent = new Intent(this, ImageSelectionActivity.class);
+        Intent intent = new Intent(this, FaceDetectionModel.class);
         intent.putExtra("MODULE_TYPE", "FaceDetection");
         startActivity(intent);
     }
-
     private void loadImagesFromFirebase() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 imageDataList.clear();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    String imageUrl = postSnapshot.getValue(String.class);
-                    imageDataList.add(new ImageData(imageUrl, "90%")); // Adjust accuracy as needed
+                    ImageUpload imageUpload = postSnapshot.getValue(ImageUpload.class);
+                    if (imageUpload != null) {
+                        String imageUrl = imageUpload.getImageUrl();
+                        String result = imageUpload.getResult();
+                        imageDataList.add(new ImageData(imageUrl, result));
+                    }
                 }
                 imageAdapter.notifyDataSetChanged();
             }

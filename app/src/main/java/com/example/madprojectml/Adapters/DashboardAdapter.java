@@ -11,12 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.madprojectml.mlmodels.RealTimeObjectDetection;
 import com.example.madprojectml.models.DashboardItem;
 import com.example.madprojectml.modules.FaceDetection;
 import com.example.madprojectml.modules.FlowerClassification;
 import com.example.madprojectml.modules.ImageClassificationActivity;
 import com.example.madprojectml.modules.ObjectDetection;
 import com.example.madprojectml.R;
+import com.example.madprojectml.modules.linkerRealTimeObjectDetection;
 
 import java.util.List;
 
@@ -47,8 +49,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int currentPostion = holder.getAdapterPosition();
                 // Navigate to respective activity based on item position
-                switch (position) {
+                switch (currentPostion) {
                     case 0:
                         // Navigate to Image Classification Activity
                         Intent imageIntent = new Intent(context, ImageClassificationActivity.class);
@@ -69,6 +72,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
                         Intent faceIntent = new Intent(context, FaceDetection.class);
                         context.startActivity(faceIntent);
                         break;
+                    case 4:
+                        Intent realTimeObjectInent = new Intent(context, linkerRealTimeObjectDetection.class);
+                        context.startActivity(realTimeObjectInent);
                     default:
                         break;
                 }
