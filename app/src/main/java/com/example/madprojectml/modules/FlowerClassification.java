@@ -10,10 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madprojectml.Adapters.ImageAdapter;
-import com.example.madprojectml.ImageSelectionActivity;
 import com.example.madprojectml.R;
 import com.example.madprojectml.mlmodels.FlowerClassificationModel;
-import com.example.madprojectml.models.ImageData;
 import com.example.madprojectml.models.ImageUpload;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +26,7 @@ import java.util.List;
 public class FlowerClassification extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
-    private List<ImageData> imageDataList;
+    private List<ImageUpload> imageDataList;
     private ImageAdapter imageAdapter;
     private FloatingActionButton fabAddImage;
 
@@ -62,9 +60,11 @@ public class FlowerClassification extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ImageUpload imageUpload = postSnapshot.getValue(ImageUpload.class);
                     if (imageUpload != null) {
+
+                        imageUpload.setKey(postSnapshot.getKey());
                         String imageUrl = imageUpload.getImageUrl();
                         String result = imageUpload.getResult();
-                        imageDataList.add(new ImageData(imageUrl, result));
+                        imageDataList.add(new ImageUpload(imageUrl, result));
                     }
                 }
                 imageAdapter.notifyDataSetChanged();

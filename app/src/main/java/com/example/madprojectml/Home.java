@@ -57,7 +57,7 @@ public class Home extends AppCompatActivity {
         dashboardItems.add(new DashboardItem(R.drawable.ic_flower_classification, "Flower Classification"));
         dashboardItems.add(new DashboardItem(R.drawable.ic_object_dtetection, "Object Detection"));
         dashboardItems.add(new DashboardItem(R.drawable.ic_face_detection, "Face Detection"));
-        dashboardItems.add(new DashboardItem(R.drawable.ic_face_detection, "Real Time Object Detection"));
+        dashboardItems.add(new DashboardItem(R.drawable.ic_audio_classification, "Real Time Object Detection"));
 
         adapter = new DashboardAdapter(this, dashboardItems);
         recyclerView.setAdapter(adapter);
@@ -68,11 +68,11 @@ public class Home extends AppCompatActivity {
                 signOut();
             }
         });
-        //showAds();
+        showAds();
 
     }
 
-    private void showAds()
+    public void showAds()
     {
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -83,53 +83,53 @@ public class Home extends AppCompatActivity {
 
         AdRequest request1 = new AdRequest.Builder().build();
 
-//        InterstitialAd.load(Home.this, "ca-app-pub-3940256099942544/1033173712",
-//                request1, new InterstitialAdLoadCallback() {
-//                    @Override
-//                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-//                        super.onAdFailedToLoad(loadAdError);
-//
-//                    }
-//
-//                    @Override
-//                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-//                        super.onAdLoaded(interstitialAd);
-//                        mAd = interstitialAd;
-//                        mAd.show(Home.this);
-//                        mAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-//                            @Override
-//                            public void onAdClicked() {
-//                                super.onAdClicked();
-//                                Toast.makeText(Home.this, "Interstitial ad clicked", Toast.LENGTH_SHORT).show();
-//                            }
-//
-//                            @Override
-//                            public void onAdDismissedFullScreenContent() {
-//                                super.onAdDismissedFullScreenContent();
-//                                Toast.makeText(Home.this, "bye bye", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//
-//                    }
-//                });
-//
-//        ad = findViewById(R.id.ad);
-//        AdRequest request = new AdRequest.Builder().build();
-//        ad.loadAd(request);
-//
-//        ad.setAdListener(new AdListener() {
-//            @Override
-//            public void onAdClicked() {
-//                super.onAdClicked();
-//                Toast.makeText(Home.this, "adClicked", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onAdClosed() {
-//                super.onAdClosed();
-//                Toast.makeText(Home.this, "adClosed", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        InterstitialAd.load(Home.this, "ca-app-pub-3940256099942544/1033173712",
+                request1, new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        super.onAdFailedToLoad(loadAdError);
+
+                    }
+
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        super.onAdLoaded(interstitialAd);
+                        mAd = interstitialAd;
+                        mAd.show(Home.this);
+                        mAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdClicked() {
+                                super.onAdClicked();
+                                Toast.makeText(Home.this, "Interstitial ad clicked", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                super.onAdDismissedFullScreenContent();
+                                //Toast.makeText(Home.this, "bye bye", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                });
+
+        ad = findViewById(R.id.ad);
+        AdRequest request = new AdRequest.Builder().build();
+        ad.loadAd(request);
+
+        ad.setAdListener(new AdListener() {
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                Toast.makeText(Home.this, "adClicked", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                Toast.makeText(Home.this, "adClosed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

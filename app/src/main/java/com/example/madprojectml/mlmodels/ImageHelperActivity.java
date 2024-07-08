@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.FileProvider;
 
 import com.example.madprojectml.R;
 import com.example.madprojectml.models.BoxWithLabel;
@@ -90,6 +91,9 @@ public class ImageHelperActivity extends AppCompatActivity {
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
         }
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAPTURE_IMAGE);}
+
 
         init();
 
@@ -98,7 +102,14 @@ public class ImageHelperActivity extends AppCompatActivity {
         }
 
         if (btnOpenCamera != null) {
-            btnOpenCamera.setOnClickListener(this::onStartCamera);
+            btnOpenCamera.setOnClickListener(v->
+            {if (isCameraAvailable()) {
+                        onStartCamera(v);
+            } else {
+                        Toast.makeText(this, "Camera not available", Toast.LENGTH_SHORT).show();
+                    }
+
+            });
         }
         if (btnSave != null) {
             btnSave.setOnClickListener(v -> {
@@ -128,13 +139,33 @@ public class ImageHelperActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_PICK_IMAGE);
         }
     }
+    private boolean isCameraAvailable() {
+        return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+    }
 
     public void onStartCamera(View view) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent, REQUEST_CAPTURE_IMAGE);
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            if (photoFile != null) {
+                imageUri = FileProvider.getUriForFile(this, "com.example.madprojectml.provider", photoFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(intent, REQUEST_CAPTURE_IMAGE);
+            }
         }
     }
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -145,14 +176,13 @@ public class ImageHelperActivity extends AppCompatActivity {
             ivInput.setImageURI(imageUri);
             runClassification(bitmap);
         }
-        if (requestCode == REQUEST_CAPTURE_IMAGE && resultCode == RESULT_OK && data != null) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageUri = getImageUri(imageBitmap);
+        if (requestCode == REQUEST_CAPTURE_IMAGE && resultCode == RESULT_OK) {
+            Bitmap imageBitmap = loadFromUri(imageUri);
             ivInput.setImageURI(imageUri);
             runClassification(imageBitmap);
         }
     }
+
 
     protected Bitmap loadFromUri(Uri uri) {
         Bitmap bitmap = null;
