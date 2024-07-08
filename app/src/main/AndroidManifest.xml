@@ -14,6 +14,8 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
+
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -24,9 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MADProjectML"
         tools:targetApi="31">
-        <activity
-            android:name=".Ads"
-            android:exported="false" />
+     " />
         <activity
             android:name=".modules.linkerRealTimeObjectDetection"
             android:exported="false" />
@@ -71,7 +71,15 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713"/>
-
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
     </application>
 
 </manifest>
