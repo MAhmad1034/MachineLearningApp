@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.madprojectml.models.ImageData;
+import com.example.madprojectml.models.ImageUpload;
 import com.example.madprojectml.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -22,10 +22,10 @@ import java.util.List;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
 
     private Context context;
-    private List<ImageData> imageDataList;
+    private List<ImageUpload> imageDataList;
     private DatabaseReference databaseReference;
 
-    public ImageAdapter(Context context, List<ImageData> imageDataList, String moduleType) {
+    public ImageAdapter(Context context, List<ImageUpload> imageDataList, String moduleType) {
         this.context = context;
         this.imageDataList = imageDataList;
         switch (moduleType) {
@@ -55,13 +55,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        ImageData imageData = imageDataList.get(position);
-        holder.textViewAccuracy.setText(imageData.getAccuracy());
+        ImageUpload imageData = imageDataList.get(position);
+        holder.textViewAccuracy.setText(imageData.getResult());
         Glide.with(context).load(imageData.getImageUrl()).into(holder.imageView);
 
         // Example of deleting an image (long press)
         holder.itemView.setOnLongClickListener(v -> {
-            deleteImage(imageData.getImageUrl());
+            deleteImage(imageData.getKey(), position);
             return true;
         });
     }
@@ -82,9 +82,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         }
     }
 
-    private void deleteImage(String imageId) {
-        databaseReference.child(imageId).removeValue()
-                .addOnSuccessListener(aVoid -> Toast.makeText(context, "Image deleted successfully", Toast.LENGTH_SHORT).show())
+    private void deleteImage(String key, int position) {
+        databaseReference.child(key).removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    // Remove the item from the list and notify the adapter
+                    imageDataList.remove(position);
+                    notifyItemRemoved(position);
+                    Toast.makeText(context, "Image deleted successfully", Toast.LENGTH_SHORT).show();
+                })
                 .addOnFailureListener(e -> Toast.makeText(context, "Failed to delete image: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

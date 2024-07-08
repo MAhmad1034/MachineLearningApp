@@ -1,7 +1,6 @@
 package com.example.madprojectml;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -9,6 +8,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuthException;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,6 +62,15 @@ public class MainActivity extends AppCompatActivity {
                 String cPassword = etRePassS.getText().toString();
 
                 if (email.isEmpty() || password.isEmpty() || cPassword.isEmpty()) {
+                    if (email.isEmpty()) {
+                        etEmailS.setError("Email is required");
+                    }
+                    if (password.isEmpty()) {
+                        etPassS.setError("Password is required");
+                    }
+                    if (cPassword.isEmpty()) {
+                        etRePassS.setError("Confirm Password is required");
+                    }
                     Toast.makeText(MainActivity.this, "Something is missing", Toast.LENGTH_SHORT).show();
                 } else {
                     if (password.equals(cPassword)) {
@@ -70,24 +80,23 @@ public class MainActivity extends AppCompatActivity {
                                         // Sign in success, update UI with the signed-in user's information
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         updateUI(user);
-                                        manager.beginTransaction()
-                                                .show(loginFrag)
-                                                .hide(signupFrag)
-                                                .commit();
+                                        startActivity(new Intent(MainActivity.this, Home.class));
+                                        finish();
                                     } else {
                                         // If sign-in fails, display a message to the user.
-                                        Toast.makeText(MainActivity.this, "Authentication failed.",
+                                        String errorMessage = getFirebaseAuthErrorMessage(task.getException());
+                                        Toast.makeText(MainActivity.this, "Authentication failed: " + errorMessage,
                                                 Toast.LENGTH_SHORT).show();
                                         updateUI(null);
                                     }
                                 });
                     } else {
+                        etRePassS.setError("Passwords do not match");
                         Toast.makeText(MainActivity.this, "Password mismatched", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         });
-
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +104,12 @@ public class MainActivity extends AppCompatActivity {
                 String email = etEmailL.getText().toString().trim();
                 String password = etPassL.getText().toString().trim();
                 if (email.isEmpty() || password.isEmpty()) {
+                    if (email.isEmpty()) {
+                        etEmailL.setError("Email is required");
+                    }
+                    if (password.isEmpty()) {
+                        etPassL.setError("Password is required");
+                    }
                     Toast.makeText(MainActivity.this, "Something is missing", Toast.LENGTH_SHORT).show();
                 } else {
                     mAuth.signInWithEmailAndPassword(email, password)
@@ -107,7 +122,8 @@ public class MainActivity extends AppCompatActivity {
                                     finish();
                                 } else {
                                     // If sign in fails, display a message to the user.
-                                    Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    String errorMessage = getFirebaseAuthErrorMessage(task.getException());
+                                    Toast.makeText(MainActivity.this, "Authentication failed: " + errorMessage,
                                             Toast.LENGTH_SHORT).show();
                                     updateUI(null);
                                 }
@@ -154,5 +170,13 @@ public class MainActivity extends AppCompatActivity {
         btnSignup = SignupFragView.findViewById(R.id.btnSignup);
 
         manager.beginTransaction().show(loginFrag).hide(signupFrag).commit();
+    }
+
+    private String getFirebaseAuthErrorMessage(Exception exception) {
+        if (exception instanceof FirebaseAuthException) {
+            return ((FirebaseAuthException) exception).getErrorCode();
+        } else {
+            return exception != null ? exception.getMessage() : "Unknown error occurred";
+        }
     }
 }
